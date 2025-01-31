@@ -3,13 +3,12 @@
 namespace Drupal\menu_tab_access\Plugin\views\access;
 
 use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Access\AccessResultNeutral;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\taxonomy\TermStorageInterface;
-use Drupal\taxonomy\VocabularyStorageInterface;
 use Drupal\views\Plugin\views\access\AccessPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
@@ -29,7 +28,19 @@ class TaxonomyChoiceAccessHandler extends AccessPluginBase implements ContainerF
    */
   protected $usesOptions = TRUE;
 
-  private EntityTypeManagerInterface $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * @param array $configuration The configuration.
@@ -47,42 +58,10 @@ class TaxonomyChoiceAccessHandler extends AccessPluginBase implements ContainerF
     $this->entityTypeManager = $entityTypeManager;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('entity_type.manager')
-    );
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function access(AccountInterface $account)
   {
-    $node = \Drupal::request()->get('node');
-    if ($node) {
-      $node = \Drupal::entityTypeManager()->getStorage('node')->load($node);
-      $terms = $node->get('field_tags')->referencedEntities();
-      $chosen_terms = $this->options['taxonomy_access']['term_ids'];
-      $invert = $this->options['taxonomy_access']['invert_terms'];
-      $match = FALSE;
-      foreach ($terms as $term) {
-        if (in_array($term->id(), $chosen_terms)) {
-          $match = TRUE;
-          break;
-        }
-      }
-      if ($invert) {
-        $match = !$match;
-      }
-      return $match;
-    }
-    return FALSE;
+    // This does nothing as the route definition is altered.
+    return TRUE;
   }
 
   /**
@@ -90,7 +69,14 @@ class TaxonomyChoiceAccessHandler extends AccessPluginBase implements ContainerF
    */
   public function alterRouteDefinition(Route $route)
   {
-    $route->setRequirement('_custom_access', 'menu_tab_access.taxonomy_access_handler');
+    if (!empty($this->options['taxonomy_access']['term_ids']) &&
+      !empty($this->options['taxonomy_access']['vocabulary_id'])
+    ) {
+      $route->setRequirement('_custom_access', 'menu_tab_access.taxonomy_choice_handler::access');
+      $route->setDefaults([
+        'options' => $this->options,
+      ]);
+    }
   }
 
   /**

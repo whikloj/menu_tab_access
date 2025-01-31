@@ -1,5 +1,6 @@
 services:
-  menu_tab_access.taxonomy_access_handler:
-    class: Drupal\menu_tab_access\Plugin\views\access\TaxonomyChoiceAccessHandler
+  menu_tab_access.taxonomy_choice_handler:
+    class: Drupal\menu_tab_access\Access\TaxonomyAccessHandler
+    arguments: ['@entity_type.manager']
     tags:
-      - { name: views.access }
+      - { name: views_access }
