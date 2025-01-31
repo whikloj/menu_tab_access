@@ -1,0 +1,8 @@
+{
+  "name": "drupal/menu_tab_access",
+  "type": "drupal-module",
+  "description": "Additional access controls to views menu tabs",
+  "keywords": ["Drupal", "menu", "access", "views"],
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev"
+}

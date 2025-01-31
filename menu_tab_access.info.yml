@@ -1,0 +1,9 @@
+name: Views Menu Tab Access Handler
+
+description: Provides some additional views access controls for menu tabs.
+core: 9.x
+core_version_requirement: ^9 || ^10
+package: Views
+type: module
+dependencies:
+  - drupal:views

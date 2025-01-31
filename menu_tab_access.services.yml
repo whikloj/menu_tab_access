@@ -1,0 +1,5 @@
+services:
+  menu_tab_access.taxonomy_access_handler:
+    class: Drupal\menu_tab_access\Plugin\views\access\TaxonomyChoiceAccessHandler
+    tags:
+      - { name: views.access }

@@ -1,0 +1,23 @@
+<?php
+/**
+* @file
+* A description of what your module does.
+*/
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function menu_tab_access_help($route_name, RouteMatchInterface $route_match)
+{
+  switch ($route_name) {
+    case 'help.page.menu_tab_access':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Menu Tab Access provides additional access tools for Views.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
