@@ -16,6 +16,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   title = @Translation("Taxonomy Choice Argument Validator"),
  *   help = @Translation("Validates that argument has field_model with the selected taxonomy terms.")
  * )
+ * TODO: This will not prevent access to the view, only filter the results until
+ *   https://www.drupal.org/project/drupal/issues/2778345 is resolved.
  */
 class TaxonomyChoiceArgumentValidator extends ArgumentValidatorPluginBase
 {
