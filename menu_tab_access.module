@@ -15,7 +15,7 @@ function menu_tab_access_help($route_name, RouteMatchInterface $route_match)
     case 'help.page.menu_tab_access':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Menu Tab Access provides additional access tools for Views.') . '</p>';
+      $output .= '<p>' . t('Menu Tab Access provides additional argument validators for Views.') . '</p>';
       return $output;
 
     default:
